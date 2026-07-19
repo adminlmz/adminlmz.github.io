@@ -1,0 +1,41 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { categories } from "@/config";
+
+interface Props {
+  posts: CollectionEntry<"posts">[];
+  emptyText?: string;
+}
+
+const { posts, emptyText = "这个栏目还没有公开文章。" } = Astro.props;
+const formatter = new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit" });
+const postHref = (id: string) => `/posts/${id.replace(/\.(md|mdx)$/, "")}/`;
+const categoryLabel = (slug: string) => categories.find((category) => category.slug === slug)?.label ?? slug;
+---
+
+{posts.length === 0 ? (
+  <div class="empty-state">
+    <strong>暂时没有记录</strong>
+    <p>{emptyText}</p>
+    <a class="text-link" href="/projects/">先看项目档案</a>
+  </div>
+) : (
+  <div class="post-list" aria-label="文章列表">
+    {posts.map((post) => (
+      <article class="post-row">
+        <div class="post-date">
+          <span>{formatter.format(post.data.published)}</span>
+          <small>{categoryLabel(post.data.category)}</small>
+        </div>
+        <div class="post-copy">
+          <h2><a href={postHref(post.id)}>{post.data.title}</a></h2>
+          <p>{post.data.description}</p>
+          <div class="post-tags">
+            {post.data.tags.slice(0, 4).map((tag) => <span>#{tag}</span>)}
+          </div>
+        </div>
+        <a class="post-open" href={postHref(post.id)} aria-label={`阅读 ${post.data.title}`}>阅读</a>
+      </article>
+    ))}
+  </div>
+)}

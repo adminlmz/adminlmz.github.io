@@ -1,0 +1,69 @@
+---
+import PostList from "@/components/PostList.astro";
+import OrbitLayout from "@/layouts/OrbitLayout.astro";
+import { categories } from "@/config";
+import { getPublishedPosts } from "@/utils/content";
+
+const posts = await getPublishedPosts();
+---
+
+<OrbitLayout title="全部文章" hudTitle="全部文章" active="/archive/" description="MLZ ORBIT 全部公开文章。">
+  <section class="content-intro">
+    <h2>全部文章</h2>
+    <p>按标题、摘要、栏目或标签过滤。没有 JavaScript 时仍会显示完整列表。</p>
+  </section>
+
+  <div class="archive-search">
+    <label for="archive-query">搜索当前文章</label>
+    <input id="archive-query" type="search" placeholder="例如 H200、Agent、自动化" autocomplete="off" />
+  </div>
+
+  <p id="archive-status" class="sr-only" aria-live="polite" aria-atomic="true"></p>
+  <div id="archive-results">
+    <PostList posts={posts} />
+  </div>
+
+  <script is:inline define:vars={{ posts: posts.map((post) => ({
+    id: post.id.replace(/\.(md|mdx)$/, ""),
+    title: post.data.title,
+    description: post.data.description,
+    category: categories.find((category) => category.slug === post.data.category)?.label ?? post.data.category,
+    tags: post.data.tags,
+    published: post.data.published.toISOString()
+  })) }}>
+    const input = document.querySelector("#archive-query");
+    const results = document.querySelector("#archive-results");
+    const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (char) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#039;"
+    })[char]);
+
+    const render = (query) => {
+      if (!results) return;
+      const status = document.querySelector("#archive-status");
+      const value = query.trim().toLowerCase();
+      const filtered = posts.filter((post) => [post.title, post.description, post.category, ...post.tags].join(" ").toLowerCase().includes(value));
+      if (status) {
+        status.textContent = value
+          ? `找到 ${filtered.length} 篇与“${query.trim()}”相关的文章。`
+          : `显示全部 ${filtered.length} 篇文章。`;
+      }
+      if (filtered.length === 0) {
+        results.innerHTML = '<div class="empty-state"><strong>没有匹配文章</strong><p>换一个关键词，或清空搜索框查看全部文章。</p></div>';
+        return;
+      }
+      results.innerHTML = `<div class="post-list">${filtered.map((post) => `
+        <article class="post-row">
+          <div class="post-date"><span>${new Intl.DateTimeFormat("zh-CN").format(new Date(post.published))}</span><small>${escapeHtml(post.category)}</small></div>
+          <div class="post-copy"><h2><a href="/posts/${encodeURIComponent(post.id)}/">${escapeHtml(post.title)}</a></h2><p>${escapeHtml(post.description)}</p><div class="post-tags">${post.tags.slice(0, 4).map((tag) => `<span>#${escapeHtml(tag)}</span>`).join("")}</div></div>
+          <a class="post-open" href="/posts/${encodeURIComponent(post.id)}/" aria-label="打开《${escapeHtml(post.title)}》">打开</a>
+        </article>`).join("")}</div>`;
+    };
+
+    if (input instanceof HTMLInputElement) {
+      const initial = new URLSearchParams(window.location.search).get("q") || "";
+      input.value = initial;
+      if (initial) render(initial);
+      input.addEventListener("input", () => render(input.value));
+    }
+  </script>
+</OrbitLayout>

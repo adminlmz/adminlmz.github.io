@@ -1,0 +1,81 @@
+---
+import { categories } from "@/config";
+
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface ArticleLink {
+  title: string;
+  href: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  date: string;
+  updated?: string;
+  author: string;
+  category: string;
+  tags: string[];
+  headings: Heading[];
+  project?: ArticleLink;
+  previous?: ArticleLink;
+  next?: ArticleLink;
+}
+
+const { title, description, date, updated, author, category, tags, headings, project, previous, next } = Astro.props;
+const tableOfContents = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+const categoryLabel = categories.find((item) => item.slug === category)?.label ?? category;
+---
+
+<article class="reader-shell">
+  <header class="reader-header">
+    <div class="reader-meta">
+      <span>{author}</span>
+      <span>发布于 {date}</span>
+      {updated && <span>更新于 {updated}</span>}
+      <span>{categoryLabel}</span>
+      {tags.map((tag) => <span>#{tag}</span>)}
+    </div>
+    <h1>{title}</h1>
+    <p>{description}</p>
+    {project && <a class="reader-project-link" href={project.href}>关联项目：{project.title} <span aria-hidden="true">↗</span></a>}
+  </header>
+
+  {tableOfContents.length > 0 && (
+    <nav class="reader-toc" aria-labelledby="reader-toc-title">
+      <p id="reader-toc-title">本文目录</p>
+      <ol>
+        {tableOfContents.map((heading) => (
+          <li class:list={[`depth-${heading.depth}`]}>
+            <a href={`#${heading.slug}`}>{heading.text}</a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  )}
+
+  <div class="prose">
+    <slot />
+  </div>
+
+  {(previous || next) && (
+    <nav class="reader-pager" aria-label="相邻文章">
+      {previous && (
+        <a href={previous.href} rel="prev">
+          <span>上一篇</span>
+          <strong>{previous.title}</strong>
+        </a>
+      )}
+      {next && (
+        <a class="reader-next" href={next.href} rel="next">
+          <span>下一篇</span>
+          <strong>{next.title}</strong>
+        </a>
+      )}
+    </nav>
+  )}
+</article>

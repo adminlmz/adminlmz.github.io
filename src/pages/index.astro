@@ -1,0 +1,90 @@
+---
+import HomeActivityStream from "@/components/HomeActivityStream.astro";
+import HomeEvidenceRail from "@/components/HomeEvidenceRail.astro";
+import ProjectList from "@/components/ProjectList.astro";
+import ProjectRoadmap from "@/components/ProjectRoadmap.astro";
+import TopicIndex from "@/components/TopicIndex.astro";
+import OrbitLayout from "@/layouts/OrbitLayout.astro";
+import { site } from "@/config";
+import { caseProjects, projects, roadmapProjects } from "@/data/projects";
+import { getPublishedPosts } from "@/utils/content";
+
+const posts = await getPublishedPosts();
+const featuredOrder = new Map([
+  ["agentic-toolbox", 0],
+  ["onsite-compute-ops", 1],
+  ["bitcoin-prediction-radar", 2]
+]);
+const featuredProjects = caseProjects
+  .filter((project) => project.featured)
+  .sort((a, b) => (featuredOrder.get(a.slug) ?? Number.MAX_SAFE_INTEGER) - (featuredOrder.get(b.slug) ?? Number.MAX_SAFE_INTEGER));
+---
+
+<OrbitLayout universeOnly active="/" description={site.description}>
+  <section class="home-hero" aria-labelledby="home-title">
+    <div class="home-hero-copy">
+      <p class="home-kicker">智算现场 × Agent 系统 × 本地自动化</p>
+      <h1 id="home-title"><span class="home-title-line">把复杂现场，</span><span class="home-title-line"><span class="home-title-keep">做成可复核的</span>系统。</span></h1>
+      <p class="home-deck">这里记录我做成的工具、验证过的方法和仍在推进的方向。项目说结果，文章讲过程，路线说明下一步。</p>
+      <div class="home-actions">
+        <a href="#home-projects">先看可核验项目</a>
+        <a href="#home-activity">阅读最近记录 <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+    <HomeEvidenceRail projects={featuredProjects} />
+  </section>
+
+  <section id="home-projects" class="home-section home-projects" aria-labelledby="projects-title">
+    <div class="section-heading section-heading-wide">
+      <div>
+        <p class="section-kicker">代表项目</p>
+        <h2 id="projects-title">项目不只展示，要经得起检查。</h2>
+      </div>
+      <div class="section-heading-aside">
+        <p>先看问题、本人职责、关键决策和验证记录，再决定是否继续读完整案例。</p>
+        <a class="section-link" href="/projects/#case-studies">全部已有产物</a>
+      </div>
+    </div>
+    <ProjectList projects={featuredProjects} compact />
+  </section>
+
+  <section id="home-activity" class="home-section home-activity" aria-labelledby="activity-title">
+    <div class="section-heading section-heading-wide">
+      <div>
+        <p class="section-kicker">最近产出</p>
+        <h2 id="activity-title">最近做了什么，一条流看清。</h2>
+      </div>
+      <div class="section-heading-aside">
+        <p>文章、验证和路线动作使用不同标签；没有日期的路线不会伪装成最近成果。</p>
+        <a class="section-link" href="/archive/">全部文章</a>
+      </div>
+    </div>
+    <div class="home-activity-layout">
+      <HomeActivityStream posts={posts} caseProjects={featuredProjects} roadmapProjects={roadmapProjects} />
+      <TopicIndex projects={projects} posts={posts} />
+    </div>
+  </section>
+
+  <section class="home-section home-roadmap" aria-labelledby="home-roadmap-title">
+    <div class="section-heading section-heading-wide">
+      <div>
+        <p class="section-kicker">建设路线</p>
+        <h2 id="home-roadmap-title">只显示真实下一步。</h2>
+      </div>
+      <div class="section-heading-aside">
+        <p>每阶段突出一条当前动作，其余方向保留紧凑入口；完整验收标准留在详情页。</p>
+        <a class="section-link" href="/projects/#roadmap">查看里程碑与验收</a>
+      </div>
+    </div>
+    <ProjectRoadmap projects={roadmapProjects} condensed />
+  </section>
+
+  <section class="home-principles" aria-label="公开原则">
+    <span>只读优先</span><span>一步一证据</span><span>状态与产物分开</span><span>脱敏后公开</span>
+  </section>
+
+  <footer class="home-footer">
+    <p>{site.subtitle}</p>
+    <p><a class="text-link" href="/rss.xml">RSS 订阅</a></p>
+  </footer>
+</OrbitLayout>

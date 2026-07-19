@@ -1,0 +1,46 @@
+---
+import type { ProjectEvidence } from "@/data/projects";
+
+interface Props {
+  evidence: ProjectEvidence[];
+}
+
+const { evidence } = Astro.props;
+const typeLabels: Record<ProjectEvidence["type"], string> = {
+  test: "测试",
+  validator: "验证器",
+  screenshot: "截图",
+  chart: "图表",
+  report: "报告",
+  article: "文章",
+  "source-audit": "来源核验"
+};
+const formatter = new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit" });
+const formatDate = (value: string) => formatter.format(new Date(`${value}T00:00:00+08:00`));
+const isImage = (href?: string) => Boolean(href && /\.(?:svg|png|jpe?g|webp)$/i.test(href));
+---
+
+<div class="evidence-grid">
+  {evidence.map((item) => {
+    const content = (
+      <>
+        {isImage(item.href) && <img src={item.href} alt={`${item.label}：${item.detail}`} loading="lazy" />}
+        <div class="evidence-card-body">
+          <div class="evidence-card-meta">
+            <span>{typeLabels[item.type]}</span>
+            <time datetime={item.verifiedAt}>{formatDate(item.verifiedAt)}</time>
+          </div>
+          <h3>{item.label}</h3>
+          <p>{item.detail}</p>
+          {item.href && <span class="evidence-card-open">打开证据 <span aria-hidden="true">↗</span></span>}
+        </div>
+      </>
+    );
+
+    return item.href ? (
+      <a class="evidence-card" href={item.href}>{content}</a>
+    ) : (
+      <article class="evidence-card evidence-card-static">{content}</article>
+    );
+  })}
+</div>

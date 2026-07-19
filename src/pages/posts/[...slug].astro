@@ -1,0 +1,65 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { render } from "astro:content";
+import Reader from "@/components/Reader.astro";
+import OrbitLayout from "@/layouts/OrbitLayout.astro";
+import { site } from "@/config";
+import { getProject } from "@/data/projects";
+import { getPublishedPosts, postSlug } from "@/utils/content";
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  return posts.map((entry) => ({ params: { slug: postSlug(entry.id) }, props: { entry } }));
+}
+
+interface Props {
+  entry: CollectionEntry<"posts">;
+}
+
+const { entry } = Astro.props;
+const { Content, headings } = await render(entry);
+const posts = await getPublishedPosts();
+const currentIndex = posts.findIndex((post) => post.id === entry.id);
+const previousEntry = posts[currentIndex + 1];
+const nextEntry = posts[currentIndex - 1];
+const previous = previousEntry
+  ? { title: previousEntry.data.title, href: `/posts/${postSlug(previousEntry.id)}/` }
+  : undefined;
+const next = nextEntry
+  ? { title: nextEntry.data.title, href: `/posts/${postSlug(nextEntry.id)}/` }
+  : undefined;
+const date = new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "long", day: "numeric" }).format(entry.data.published);
+const updated = entry.data.updated
+  ? new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "long", day: "numeric" }).format(entry.data.updated)
+  : undefined;
+const relatedProject = entry.data.project ? getProject(entry.data.project) : undefined;
+const project = relatedProject ? { title: relatedProject.name, href: `/projects/${relatedProject.slug}/` } : undefined;
+---
+
+<OrbitLayout
+  title={entry.data.title}
+  hudTitle="文章阅读"
+  hudTitleAsLabel
+  hudMode="reader"
+  active="/archive/"
+  description={entry.data.description}
+  ogType="article"
+  published={entry.data.published}
+  updated={entry.data.updated}
+>
+  <Reader
+    title={entry.data.title}
+    description={entry.data.description}
+    date={date}
+    updated={updated}
+    author={site.author}
+    category={entry.data.category}
+    tags={entry.data.tags}
+    headings={headings}
+    project={project}
+    previous={previous}
+    next={next}
+  >
+    <Content />
+  </Reader>
+</OrbitLayout>

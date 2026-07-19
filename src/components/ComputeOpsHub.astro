@@ -1,0 +1,127 @@
+---
+import type { CollectionEntry } from "astro:content";
+import type { CaseProject, RoadmapProject } from "@/data/projects";
+import ComputeOpsTopicIndex from "@/components/ComputeOpsTopicIndex.astro";
+import HomeActivityStream from "@/components/HomeActivityStream.astro";
+import ProjectRoadmap from "@/components/ProjectRoadmap.astro";
+
+interface Props {
+  caseProjects: CaseProject[];
+  roadmapProjects: RoadmapProject[];
+  posts: CollectionEntry<"posts">[];
+}
+
+const { caseProjects, roadmapProjects, posts } = Astro.props;
+const formatter = new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit" });
+const formatDate = (value: string) => formatter.format(new Date(`${value}T00:00:00+08:00`));
+const publicEvidence = caseProjects.flatMap((project) => project.evidence.filter((item) => item.href));
+---
+
+<div class="compute-hub">
+  <section class="compute-hub-hero" aria-labelledby="compute-hub-title">
+    <div class="compute-hub-hero-copy">
+      <p class="home-kicker">GPU × IB / RDMA × NCCL × 运行环境</p>
+      <h2 id="compute-hub-title"><span>现场问题，</span><span>从证据进入。</span></h2>
+      <p>已有项目说明做成了什么，排障主题帮助定位问题，建设路线公开下一步。</p>
+      <div class="home-actions">
+        <a href="#compute-work">先看已有产物</a>
+        <a href="#compute-topics">按问题找方法 <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+    <dl class="compute-hub-stats" aria-label="现场专题内容统计">
+      <div><dt>已有项目</dt><dd>{String(caseProjects.length).padStart(2, "0")}</dd></div>
+      <div><dt>建设方向</dt><dd>{String(roadmapProjects.length).padStart(2, "0")}</dd></div>
+      <div><dt>直接记录</dt><dd>{String(posts.length).padStart(2, "0")}</dd></div>
+      <div><dt>可打开证据</dt><dd>{String(publicEvidence.length).padStart(2, "0")}</dd></div>
+    </dl>
+  </section>
+
+  <section id="compute-work" class="compute-hub-section compute-hub-work" aria-labelledby="compute-work-title">
+    <header class="compute-section-heading">
+      <div>
+        <h2 id="compute-work-title">先确认已经做成什么。</h2>
+        <p>结果、职责和证据分开呈现；没有公开链接的证据不会生成空按钮。</p>
+      </div>
+      <a href="/projects/#case-studies">查看全部项目</a>
+    </header>
+    <div class="compute-case-list">
+      {caseProjects.map((project, index) => {
+        const linkedEvidence = project.evidence.filter((item) => item.href);
+        const evidenceItems = linkedEvidence.length > 0 ? linkedEvidence : project.evidence.slice(0, 2);
+        return (
+          <article class:list={["compute-case", { "compute-case-lead": index === 0 }]}>
+            <div class="compute-case-topline">
+              <span>{project.category}</span>
+              <span class={`status status-${project.status}`}>{project.status}</span>
+            </div>
+            <div class="compute-case-main">
+              <div class="compute-case-copy">
+                <h3><a href={`/projects/${project.slug}/`}>{project.name}</a></h3>
+                <p>{project.summary}</p>
+              </div>
+              <dl class="compute-case-facts">
+                <div><dt>本人职责</dt><dd>{project.role}</dd></div>
+                <div><dt>最后核验</dt><dd>{formatDate(project.verifiedAt)}</dd></div>
+              </dl>
+            </div>
+            <div class="compute-case-evidence">
+              <small>{linkedEvidence.length > 0 ? "公开证据" : "当前证据说明"}</small>
+              <div>
+                {evidenceItems.map((item) => item.href ? (
+                  <a href={item.href}>
+                    <strong>{item.label}</strong>
+                    <span>{item.detail}</span>
+                    <span aria-hidden="true">打开 ↗</span>
+                  </a>
+                ) : (
+                  <p>
+                    <strong>{item.label}</strong>
+                    <span>{item.detail}</span>
+                  </p>
+                ))}
+              </div>
+            </div>
+            <a class="project-open" href={`/projects/${project.slug}/`}>阅读完整案例 <span aria-hidden="true">↗</span></a>
+          </article>
+        );
+      })}
+    </div>
+  </section>
+
+  <section id="compute-topics" class="compute-hub-section compute-hub-topics" aria-labelledby="compute-topics-title">
+    <header class="compute-section-heading">
+      <div>
+        <h2 id="compute-topics-title">按现场问题进入。</h2>
+        <p>设备、链路、通信、观测、容器和调度各有独立入口，不把不同证据层混成一条答案。</p>
+      </div>
+    </header>
+    <ComputeOpsTopicIndex roadmapProjects={roadmapProjects} posts={posts} />
+  </section>
+
+  <section class="compute-hub-section compute-hub-roadmap" aria-labelledby="compute-roadmap-title">
+    <header class="compute-section-heading">
+      <div>
+        <h2 id="compute-roadmap-title">建设状态与下一步分开。</h2>
+        <p>每阶段突出一个当前动作，其余方向保持可到达；完整验收标准留在详情页。</p>
+      </div>
+      <a href="/projects/#roadmap">查看完整路线</a>
+    </header>
+    <ProjectRoadmap projects={roadmapProjects} condensed />
+  </section>
+
+  <section class="compute-hub-section compute-hub-activity" aria-labelledby="compute-activity-title">
+    <header class="compute-section-heading">
+      <div>
+        <h2 id="compute-activity-title">最近公开了什么。</h2>
+        <p>文章和验证按真实日期排序，没有日期的路线动作明确标记为进行中。</p>
+      </div>
+      <a href="/archive/">查看全部文章</a>
+    </header>
+    <HomeActivityStream posts={posts} caseProjects={caseProjects} roadmapProjects={roadmapProjects} />
+  </section>
+
+  <section class="compute-hub-boundary" aria-labelledby="compute-boundary-title">
+    <h2 id="compute-boundary-title">公开边界</h2>
+    <p>不公开客户、IP、设备编号、真实拓扑、原始日志、认证信息和私人运行状态。项目详情继续说明各自的脱敏范围。</p>
+  </section>
+</div>

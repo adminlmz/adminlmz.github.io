@@ -1,0 +1,47 @@
+---
+import { categories, site } from "@/config";
+
+interface Props {
+  active?: string;
+}
+
+const { active = "/" } = Astro.props;
+const primaryLinks = [
+  { label: "现场", href: `/category/${categories[0].slug}/` },
+  { label: "Agent", href: `/category/${categories[1].slug}/` },
+  { label: "项目", href: "/projects/" },
+  { label: "文章", href: "/archive/" },
+  { label: "关于", href: "/about/" }
+];
+---
+
+<div class="space-layer" aria-hidden="true">
+  <div class="nebula"></div>
+  <div class="grid-lines"></div>
+  <div class="grain"></div>
+</div>
+
+<header class="site-nav">
+  <div class="site-nav-inner">
+    <a class="site-brand" href="/" aria-label="返回 MLZ ORBIT 首页">
+      <span class="brand-mark" aria-hidden="true"><i></i></span>
+      <span class="site-brand-copy">
+        <strong>MLZ / ORBIT</strong>
+        <small>{site.author} 的技术现场记录</small>
+      </span>
+    </a>
+
+    <nav class="site-nav-links" aria-label="主导航">
+      {primaryLinks.map((link) => (
+        <a class:list={[{ active: active === link.href }]} href={link.href} aria-current={active === link.href ? "page" : undefined}>
+          {link.label}
+        </a>
+      ))}
+    </nav>
+
+    <div class="site-nav-meta" aria-label="站点类型">
+      <span class="site-nav-rule"></span>
+      <span>PUBLIC WORK</span>
+    </div>
+  </div>
+</header>

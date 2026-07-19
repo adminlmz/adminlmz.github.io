@@ -1,0 +1,94 @@
+---
+import type { RoadmapProject } from "@/data/projects";
+
+interface Props {
+  projects: RoadmapProject[];
+  condensed?: boolean;
+}
+
+const { projects, condensed = false } = Astro.props;
+const phases = [
+  { id: 1, label: "诊断地基", description: "先建立设备与链路的证据顺序。" },
+  { id: 2, label: "通信与观测", description: "把基线、异常与告警连成闭环。" },
+  { id: 3, label: "运行环境", description: "补齐容器与调度的验证路径。" }
+] as const;
+---
+
+{condensed ? (
+  <div class="roadmap-digest" aria-label="作品建设路线摘要">
+    {phases.map((phase) => {
+      const phaseProjects = projects.filter((project) => project.phase === phase.id);
+      const focusProject = phaseProjects[0];
+      const linkedProjects = phaseProjects.slice(1);
+
+      return focusProject && (
+        <section class="roadmap-phase-digest" aria-labelledby={`roadmap-digest-${phase.id}`}>
+          <header>
+            <span>0{phase.id}</span>
+            <div>
+              <h3 id={`roadmap-digest-${phase.id}`}>{phase.label}</h3>
+              <p>{phase.description}</p>
+            </div>
+          </header>
+          <a class="roadmap-phase-focus" href={`/projects/${focusProject.slug}/`}>
+            <small>当前动作</small>
+            <strong>{focusProject.name}</strong>
+            <p>{focusProject.currentAction}</p>
+            <span aria-hidden="true">打开路线 ↗</span>
+          </a>
+          {linkedProjects.length > 0 && (
+            <div class="roadmap-phase-links" aria-label={`${phase.label}的其他建设方向`}>
+              {linkedProjects.map((project) => (
+                <a href={`/projects/${project.slug}/`}>
+                  <span>{project.status}</span>
+                  <strong>{project.name}</strong>
+                </a>
+              ))}
+            </div>
+          )}
+        </section>
+      );
+    })}
+  </div>
+) : (
+  <div class="roadmap-board">
+    <div class="roadmap-rail" aria-hidden="true"></div>
+    {phases.map((phase) => {
+      const phaseProjects = projects.filter((project) => project.phase === phase.id);
+      return (
+        <section class="roadmap-phase" aria-labelledby={`roadmap-phase-${phase.id}`}>
+          <header class="roadmap-phase-header">
+            <span class="roadmap-phase-number">0{phase.id}</span>
+            <div>
+              <h3 id={`roadmap-phase-${phase.id}`}>{phase.label}</h3>
+              <p>{phase.description}</p>
+            </div>
+          </header>
+          <div class="roadmap-cards">
+            {phaseProjects.map((project) => (
+              <article class="roadmap-card">
+                <div class="roadmap-card-status">
+                  <span>{project.status}</span>
+                  <span>阶段 0{project.phase}</span>
+                </div>
+                <h4><a href={`/projects/${project.slug}/`}>{project.name}</a></h4>
+                <p>{project.summary}</p>
+                <dl>
+                  <div>
+                    <dt>最近动作</dt>
+                    <dd>{project.currentAction}</dd>
+                  </div>
+                  <div>
+                    <dt>通过条件</dt>
+                    <dd>{project.acceptanceCriteria[0]}</dd>
+                  </div>
+                </dl>
+                <a class="roadmap-open" href={`/projects/${project.slug}/`}>查看建设计划 <span aria-hidden="true">↗</span></a>
+              </article>
+            ))}
+          </div>
+        </section>
+      );
+    })}
+  </div>
+)}

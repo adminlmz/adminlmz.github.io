@@ -1,0 +1,80 @@
+---
+import type { CollectionEntry } from "astro:content";
+import type { Project } from "@/data/projects";
+
+interface Props {
+  projects: Project[];
+  posts: CollectionEntry<"posts">[];
+}
+
+const { projects, posts } = Astro.props;
+const projectBySlug = new Map(projects.map((project) => [project.slug, project]));
+const postById = new Map(posts.map((post) => [post.id.replace(/\.(md|mdx)$/, ""), post]));
+const groups = [
+  {
+    title: "GPU 与现场诊断",
+    description: "设备可见性、健康信号与现场证据顺序。",
+    href: "/category/compute-ops/",
+    projects: ["onsite-compute-ops", "h200-knowledge-station"],
+    roadmap: ["gpu-health-diagnostics", "dcgm-monitoring-alerts"],
+    posts: ["h200-three-visibility-layers"]
+  },
+  {
+    title: "网络与集合通信",
+    description: "链路基线、RDMA 与多机通信异常。",
+    href: "/projects/#roadmap",
+    projects: ["onsite-compute-ops"],
+    roadmap: ["rdma-network-diagnostics", "nccl-communication-diagnostics"],
+    posts: ["one-command-at-a-time-agent-skill"]
+  },
+  {
+    title: "Agent 与工作流",
+    description: "执行状态、Skills、完成证据与只读边界。",
+    href: "/category/agents/",
+    projects: ["agenth-specability", "mimoclaw-apex-ecosystem"],
+    roadmap: [],
+    posts: ["one-command-at-a-time-agent-skill", "apex-read-only-evidence-boundary"]
+  },
+  {
+    title: "自动化与观察",
+    description: "本地工具、文档处理与可复核观察闭环。",
+    href: "/category/automation/",
+    projects: ["agentic-toolbox", "pdf-layout-translator", "image-excel-audit", "bitcoin-prediction-radar"],
+    roadmap: ["gpu-container-runtime", "slurm-gpu-scheduling"],
+    posts: ["from-scripts-to-agentic-toolbox", "bitcoin-radar-observation-loop"]
+  }
+] as const;
+---
+
+<aside class="topic-index" aria-labelledby="topic-index-title">
+  <header class="topic-index-header">
+    <span id="topic-index-title">长期专业主题</span>
+    <small>按问题进入</small>
+  </header>
+  <div class="topic-index-list">
+    {groups.map((group) => {
+      const projectEntries = [...group.projects, ...group.roadmap]
+        .map((slug) => projectBySlug.get(slug))
+        .filter((project) => project !== undefined)
+        .map((project) => ({ label: project.name, href: `/projects/${project.slug}/` }));
+      const postEntries = group.posts
+        .map((id) => postById.get(id))
+        .filter((post) => post !== undefined)
+        .map((post) => ({ label: post.data.title, href: `/posts/${post.id.replace(/\.(md|mdx)$/, "")}/` }));
+      const entries = [...projectEntries, ...postEntries];
+
+      return (
+        <section class="topic-index-item">
+          <a class="topic-index-title" href={group.href}>
+            <span>{String(entries.length).padStart(2, "0")}</span>
+            <strong>{group.title}</strong>
+          </a>
+          <p>{group.description}</p>
+          <div class="topic-index-links">
+            {entries.slice(0, 3).map((entry) => <a href={entry.href}>{entry.label}</a>)}
+          </div>
+        </section>
+      );
+    })}
+  </div>
+</aside>

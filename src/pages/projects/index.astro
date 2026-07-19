@@ -1,0 +1,77 @@
+---
+import ProjectList from "@/components/ProjectList.astro";
+import ProjectRoadmap from "@/components/ProjectRoadmap.astro";
+import OrbitLayout from "@/layouts/OrbitLayout.astro";
+import { caseProjects, roadmapProjects } from "@/data/projects";
+
+const featuredProjects = caseProjects.filter((project) => project.featured);
+const otherProjects = caseProjects.filter((project) => !project.featured);
+const publicEvidenceCount = caseProjects.filter((project) => project.evidence.some((item) => item.href)).length;
+---
+
+<OrbitLayout
+  title="代表项目"
+  hudTitle="项目与建设路线"
+  hudTitleAsLabel
+  active="/projects/"
+  description="八个已有产物与六个建设方向，按证据和完成状态明确分区。"
+>
+  <section class="projects-hero" aria-labelledby="projects-overview-title">
+    <div>
+      <p class="section-kicker">Projects / public work</p>
+      <h1 id="projects-overview-title">做成的东西，和下一步要做的事。</h1>
+      <p>已有产物只写能够核验的事实；旧模板里的六个方向回到建设路线，并明确最近动作和通过条件。</p>
+    </div>
+    <dl class="projects-stats" aria-label="项目摘要">
+      <div><dt>已形成产物</dt><dd>{String(caseProjects.length).padStart(2, "0")}</dd></div>
+      <div><dt>建设方向</dt><dd>{String(roadmapProjects.length).padStart(2, "0")}</dd></div>
+      <div><dt>重点案例</dt><dd>{String(featuredProjects.length).padStart(2, "0")}</dd></div>
+      <div><dt>含公开证据</dt><dd>{String(publicEvidenceCount).padStart(2, "0")}</dd></div>
+    </dl>
+  </section>
+
+  <nav class="projects-jump" aria-label="项目页快速跳转">
+    <a href="#case-studies">已形成产物</a>
+    <a href="#roadmap">作品建设路线</a>
+  </nav>
+
+  <section class="projects-section" id="case-studies" aria-labelledby="case-studies-title">
+    <header class="projects-section-heading">
+      <span>01</span>
+      <div>
+        <h2 id="case-studies-title">先看证据，再看描述。</h2>
+        <p>三个重点项目有可打开的脱敏验证资产；其余项目保留真实状态和来源核验结果。</p>
+      </div>
+    </header>
+    <ProjectList projects={featuredProjects} />
+
+    <div class="project-compact-list" aria-label="其他已形成产物">
+      {otherProjects.map((project) => (
+        <article>
+          <div>
+            <span>{project.category}</span>
+            <h3><a href={`/projects/${project.slug}/`}>{project.name}</a></h3>
+          </div>
+          <span class={`status status-${project.status}`}>{project.status}</span>
+          <span class="project-compact-proof">{project.evidence[0].label}</span>
+          <a href={`/projects/${project.slug}/`} aria-label={`查看 ${project.name}`}>↗</a>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="projects-section" id="roadmap" aria-labelledby="roadmap-title">
+    <header class="projects-section-heading">
+      <span>02</span>
+      <div>
+        <h2 id="roadmap-title">旧模板的项目，回到路线图里。</h2>
+        <p>这些方向尚未冒充成品。每项都写明最近动作、里程碑和验收标准，完成后再升格为上方案例。</p>
+      </div>
+    </header>
+    <ProjectRoadmap projects={roadmapProjects} />
+    <aside class="roadmap-boundary">
+      <strong>公开边界</strong>
+      <p>今日任务、考公、晨间、复盘和机会雷达等私人模块继续留在原文件。博客只吸收技术作品的路线、进度定义和验收规则。</p>
+    </aside>
+  </section>
+</OrbitLayout>

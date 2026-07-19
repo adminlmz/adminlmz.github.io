@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">agenth 完成证据门禁</title>
+  <desc id="desc">本地 CLI 要求任务目标、差异、验证、跳过项和风险证据齐备后才允许完成。2026 年 7 月 18 日重新运行 12 项测试，全部通过。</desc>
+  <rect width="1200" height="675" fill="#101311"/>
+  <path d="M0 112H1200M0 562H1200M96 0V675M1104 0V675" stroke="#ece9df" stroke-opacity=".12"/>
+  <text x="96" y="76" fill="#d1a164" font-family="ui-monospace, monospace" font-size="20" letter-spacing="3">LOCAL PROTOTYPE / 2026-07-18</text>
+  <text x="96" y="184" fill="#ece9df" font-family="system-ui, sans-serif" font-size="62" font-weight="650">agenth 完成证据门禁</text>
+  <text x="96" y="232" fill="#a5aaa1" font-family="system-ui, sans-serif" font-size="24">缺少任一必需证据，完成判定必须失败</text>
+  <g transform="translate(96 304)" font-family="system-ui, sans-serif">
+    <g fill="#171c18" stroke="#ece9df" stroke-opacity=".2">
+      <rect width="156" height="108"/><rect x="176" width="156" height="108"/><rect x="352" width="156" height="108"/><rect x="528" width="156" height="108"/><rect x="704" width="156" height="108"/>
+    </g>
+    <g fill="#ece9df" font-size="20" text-anchor="middle">
+      <text x="78" y="52">任务目标</text><text x="254" y="52">差异摘要</text><text x="430" y="52">通过验证</text><text x="606" y="52">跳过理由</text><text x="782" y="52">风险说明</text>
+    </g>
+    <g fill="#9bbca2" font-family="ui-monospace, monospace" font-size="18" text-anchor="middle">
+      <text x="78" y="82">REQUIRED</text><text x="254" y="82">REQUIRED</text><text x="430" y="82">REQUIRED</text><text x="606" y="82">REQUIRED</text><text x="782" y="82">REQUIRED</text>
+    </g>
+    <path d="M878 54h60" stroke="#d1a164" stroke-width="3"/>
+    <path d="M928 44l12 10-12 10" fill="none" stroke="#d1a164" stroke-width="3"/>
+    <rect x="958" width="146" height="108" fill="#d1a164"/>
+    <text x="1031" y="50" fill="#101311" font-size="22" font-weight="700" text-anchor="middle">完成</text>
+    <text x="1031" y="82" fill="#101311" font-family="ui-monospace, monospace" font-size="18" text-anchor="middle">12 / 12 PASS</text>
+  </g>
+  <text x="96" y="614" fill="#858d84" font-family="ui-monospace, monospace" font-size="17">npm test</text>
+  <text x="1104" y="614" text-anchor="end" fill="#a5aaa1" font-family="system-ui, sans-serif" font-size="17">private 本地 CLI 原型</text>
+</svg>

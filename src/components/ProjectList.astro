@@ -1,0 +1,56 @@
+---
+import type { CaseProject } from "@/data/projects";
+
+interface Props {
+  projects: CaseProject[];
+  compact?: boolean;
+}
+
+const { projects, compact = false } = Astro.props;
+const formatter = new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit" });
+const formatDate = (value: string) => formatter.format(new Date(`${value}T00:00:00+08:00`));
+---
+
+<div class:list={["case-projects", { "case-projects-compact": compact }]} aria-label="已形成产物">
+  {projects.map((project, index) => {
+    const primaryEvidence = project.evidence[0];
+    return (
+      <article class:list={[
+        "case-project-card",
+        {
+          featured: project.featured,
+          "case-project-card-lead": compact && index === 0,
+          "case-project-card-secondary": compact && index > 0
+        }
+      ]}>
+        <div class="case-project-topline">
+          <span>{project.category}</span>
+          <span class={`status status-${project.status}`}>{project.status}</span>
+        </div>
+        <div class="case-project-copy">
+          <h3><a href={`/projects/${project.slug}/`}>{project.name}</a></h3>
+          <p>{project.summary}</p>
+        </div>
+        <dl class="case-project-proof">
+          <div>
+            <dt>当前证据</dt>
+            <dd>{primaryEvidence.label}</dd>
+          </div>
+          <div>
+            <dt>最后核验</dt>
+            <dd>{formatDate(project.verifiedAt)}</dd>
+          </div>
+        </dl>
+        <div class="case-project-footer">
+          <div class="project-stack" aria-label="技术栈">
+            {project.stack.slice(0, compact ? 2 : 4).map((item) => <span>{item}</span>)}
+          </div>
+          <a class="project-open" href={`/projects/${project.slug}/`}>
+            <span>阅读案例</span>
+            <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </article>
+    );
+  })}
+</div>

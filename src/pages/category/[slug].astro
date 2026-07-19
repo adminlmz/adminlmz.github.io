@@ -1,0 +1,55 @@
+---
+import ComputeOpsHub from "@/components/ComputeOpsHub.astro";
+import PostList from "@/components/PostList.astro";
+import OrbitLayout from "@/layouts/OrbitLayout.astro";
+import { categories } from "@/config";
+import { caseProjects, roadmapProjects } from "@/data/projects";
+import { getPublishedPosts } from "@/utils/content";
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  const computeOpsCases = caseProjects.filter((project) => project.category === "智算现场运维");
+  const computeOpsRoadmaps = roadmapProjects.filter((project) => project.category === "智算现场运维");
+  const computeOpsProjectSlugs = new Set(computeOpsCases.map((project) => project.slug));
+  const computeOpsPosts = posts.filter((post) =>
+    post.data.category === "compute-ops"
+    || Boolean(post.data.project && computeOpsProjectSlugs.has(post.data.project))
+  );
+
+  return categories.map((category) => {
+    const isComputeOps = category.slug === "compute-ops";
+    return {
+      params: { slug: category.slug },
+      props: {
+        category,
+        posts: isComputeOps ? computeOpsPosts : posts.filter((post) => post.data.category === category.slug),
+        computeOpsCases: isComputeOps ? computeOpsCases : [],
+        computeOpsRoadmaps: isComputeOps ? computeOpsRoadmaps : []
+      }
+    };
+  });
+}
+
+const { category, posts, computeOpsCases, computeOpsRoadmaps } = Astro.props;
+const active = `/category/${category.slug}/`;
+const isComputeOps = category.slug === "compute-ops";
+---
+
+<OrbitLayout
+  title={category.label}
+  hudTitle={category.label}
+  active={active}
+  description={isComputeOps ? "智算现场项目、公开证据、排障主题、建设路线与最近记录。" : `${category.label}栏目文章。`}
+>
+  {isComputeOps ? (
+    <ComputeOpsHub caseProjects={computeOpsCases} roadmapProjects={computeOpsRoadmaps} posts={posts} />
+  ) : (
+    <>
+      <section class="content-intro">
+        <h2>{category.label}</h2>
+        <p>公开内容只保留可复核的方法、代码、实验和脱敏后的项目证据。</p>
+      </section>
+      <PostList posts={posts} />
+    </>
+  )}
+</OrbitLayout>

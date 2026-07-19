@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">现场算力运维 Agent 公开验证摘要</title>
+  <desc id="desc">2026 年 7 月 18 日重新运行验证器，结果通过。项目包含 10 个脚本和 20 份场景参考。</desc>
+  <rect width="1200" height="675" fill="#101311"/>
+  <path d="M0 112H1200M0 562H1200M96 0V675M1104 0V675" stroke="#ece9df" stroke-opacity=".12"/>
+  <circle cx="1038" cy="92" r="20" fill="#d1a164"/>
+  <circle cx="1038" cy="92" r="34" fill="none" stroke="#d1a164" stroke-opacity=".38"/>
+  <text x="96" y="76" fill="#d1a164" font-family="ui-monospace, monospace" font-size="20" letter-spacing="3">PUBLIC VALIDATION / 2026-07-18</text>
+  <text x="96" y="190" fill="#ece9df" font-family="system-ui, sans-serif" font-size="58" font-weight="650">现场算力运维 Agent</text>
+  <text x="96" y="238" fill="#a5aaa1" font-family="system-ui, sans-serif" font-size="25">公开资源、Schema、安全合同与黄金样例验证通过</text>
+  <g transform="translate(96 312)">
+    <rect width="300" height="154" fill="#171c18" stroke="#ece9df" stroke-opacity=".18"/>
+    <text x="24" y="44" fill="#858d84" font-family="ui-monospace, monospace" font-size="17">AUTOMATION</text>
+    <text x="24" y="106" fill="#ece9df" font-family="ui-monospace, monospace" font-size="52" font-weight="700">10</text>
+    <text x="108" y="106" fill="#a5aaa1" font-family="system-ui, sans-serif" font-size="22">个脚本</text>
+  </g>
+  <g transform="translate(414 312)">
+    <rect width="300" height="154" fill="#171c18" stroke="#ece9df" stroke-opacity=".18"/>
+    <text x="24" y="44" fill="#858d84" font-family="ui-monospace, monospace" font-size="17">REFERENCES</text>
+    <text x="24" y="106" fill="#ece9df" font-family="ui-monospace, monospace" font-size="52" font-weight="700">20</text>
+    <text x="108" y="106" fill="#a5aaa1" font-family="system-ui, sans-serif" font-size="22">份场景参考</text>
+  </g>
+  <g transform="translate(732 312)">
+    <rect width="372" height="154" fill="#171c18" stroke="#d1a164" stroke-opacity=".5"/>
+    <text x="24" y="44" fill="#858d84" font-family="ui-monospace, monospace" font-size="17">VALIDATOR</text>
+    <text x="24" y="106" fill="#9bbca2" font-family="ui-monospace, monospace" font-size="45" font-weight="700">PASS</text>
+    <text x="176" y="104" fill="#a5aaa1" font-family="system-ui, sans-serif" font-size="19">重新执行</text>
+  </g>
+  <text x="96" y="614" fill="#858d84" font-family="ui-monospace, monospace" font-size="17">python3 scripts/validate_onsite_skill.py</text>
+  <text x="1104" y="614" text-anchor="end" fill="#a5aaa1" font-family="system-ui, sans-serif" font-size="17">仅展示脱敏验证摘要</text>
+</svg>

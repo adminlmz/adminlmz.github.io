@@ -1,0 +1,51 @@
+---
+import HudPanel from "@/components/HudPanel.astro";
+import OrbitShell from "@/components/OrbitShell.astro";
+import SiteHead from "@/components/SiteHead.astro";
+import { site } from "@/config";
+import "@/styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+  hudTitle?: string;
+  hudTitleAsLabel?: boolean;
+  hudMode?: "list" | "detail" | "reader";
+  active?: string;
+  universeOnly?: boolean;
+  ogType?: "website" | "article";
+  published?: Date;
+  updated?: Date;
+}
+
+const {
+  title,
+  description = site.description,
+  hudTitle = title || "公开记录",
+  hudTitleAsLabel = false,
+  hudMode = "list",
+  active = "/",
+  universeOnly = false,
+  ogType = "website",
+  published,
+  updated
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <SiteHead title={title} description={description} type={ogType} published={published} updated={updated} />
+  </head>
+  <body class:list={[`mode-${hudMode}`, { "layout-home": universeOnly, "layout-content": !universeOnly }] }>
+    <a class="skip-link" href="#primary-content">跳到正文</a>
+    <OrbitShell active={active} />
+
+    {universeOnly ? (
+      <main id="primary-content" class="home-main"><slot /></main>
+    ) : (
+      <HudPanel title={hudTitle} titleAsLabel={hudTitleAsLabel} mode={hudMode}><slot /></HudPanel>
+    )}
+
+  </body>
+</html>

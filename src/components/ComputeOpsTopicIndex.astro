@@ -1,0 +1,76 @@
+---
+import type { CollectionEntry } from "astro:content";
+import type { RoadmapProject } from "@/data/projects";
+import { postSlug } from "@/utils/content";
+
+interface Props {
+  roadmapProjects: RoadmapProject[];
+  posts: CollectionEntry<"posts">[];
+}
+
+const { roadmapProjects, posts } = Astro.props;
+const topics = [
+  {
+    title: "GPU 健康与掉卡",
+    description: "从 XID、ECC、温度、功耗与降频信号建立设备健康证据顺序。",
+    roadmap: "gpu-health-diagnostics",
+    post: "h200-three-visibility-layers"
+  },
+  {
+    title: "IB / RoCE / RDMA 链路",
+    description: "区分 InfiniBand 与 RoCE，再检查链路状态、错误计数、带宽和时延。",
+    roadmap: "rdma-network-diagnostics"
+  },
+  {
+    title: "NCCL 多机通信",
+    description: "从拓扑、链路基线到软件栈，定位 all-reduce 卡顿、超时和 hang。",
+    roadmap: "nccl-communication-diagnostics"
+  },
+  {
+    title: "DCGM 监控与告警",
+    description: "连接指标采集、看板和告警规则，同时保留阈值复核与演练边界。",
+    roadmap: "dcgm-monitoring-alerts"
+  },
+  {
+    title: "GPU 容器运行时",
+    description: "拆开宿主机驱动、Container Toolkit、CUDA 与 GPU 设备暴露问题。",
+    roadmap: "gpu-container-runtime"
+  },
+  {
+    title: "Slurm 作业调度",
+    description: "观察资源声明、排队、抢占和资源释放，不直接套用生产策略参数。",
+    roadmap: "slurm-gpu-scheduling"
+  }
+] as const;
+
+const roadmapBySlug = new Map(roadmapProjects.map((project) => [project.slug, project]));
+const postBySlug = new Map(posts.map((post) => [postSlug(post.id), post]));
+const items = topics.map((topic) => {
+  const project = roadmapBySlug.get(topic.roadmap);
+  if (!project) throw new Error(`现场主题缺少路线项目: ${topic.roadmap}`);
+
+  const relatedPost = "post" in topic ? postBySlug.get(topic.post) : undefined;
+  if ("post" in topic && !relatedPost) throw new Error(`现场主题缺少相关文章: ${topic.post}`);
+  return { ...topic, project, relatedPost };
+});
+---
+
+<div class="compute-topic-list" aria-label="现场排障主题">
+  {items.map(({ title, description, project, relatedPost }) => (
+    <article class="compute-topic-item">
+      <header>
+        <h3><a href={`/projects/${project.slug}/`}>{title}</a></h3>
+        <span>{project.status}</span>
+      </header>
+      <p>{description}</p>
+      <div class="compute-topic-action">
+        <small>当前动作</small>
+        <strong>{project.currentAction}</strong>
+      </div>
+      <footer>
+        <a href={`/projects/${project.slug}/`}>打开排障路线 <span aria-hidden="true">↗</span></a>
+        {relatedPost && <a href={`/posts/${postSlug(relatedPost.id)}/`}>阅读相关实录 <span aria-hidden="true">↗</span></a>}
+      </footer>
+    </article>
+  ))}
+</div>

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">比特币预测市场雷达公开验证摘要</title>
+  <desc id="desc">2026 年 7 月 18 日重新运行 34 项测试，全部通过。验证只读观察、市场过滤、首次观察、告警和结算闭环。</desc>
+  <rect width="1200" height="675" fill="#101311"/>
+  <path d="M0 112H1200M0 562H1200M96 0V675M1104 0V675" stroke="#ece9df" stroke-opacity=".12"/>
+  <path d="M936 118l36-22 36 22 36-22 36 22" fill="none" stroke="#d1a164" stroke-width="3"/>
+  <text x="96" y="76" fill="#d1a164" font-family="ui-monospace, monospace" font-size="20" letter-spacing="3">READ-ONLY VALIDATION / 2026-07-18</text>
+  <text x="96" y="190" fill="#ece9df" font-family="system-ui, sans-serif" font-size="56" font-weight="650">比特币预测市场雷达</text>
+  <text x="96" y="238" fill="#a5aaa1" font-family="system-ui, sans-serif" font-size="25">首次观察、数据过滤、告警与结算验证闭环</text>
+  <g transform="translate(96 304)">
+    <rect width="1008" height="176" fill="#171c18" stroke="#ece9df" stroke-opacity=".18"/>
+    <path d="M46 88H950" stroke="#ece9df" stroke-opacity=".16"/>
+    <circle cx="82" cy="88" r="12" fill="#d1a164"/>
+    <circle cx="306" cy="88" r="12" fill="#d1a164"/>
+    <circle cx="530" cy="88" r="12" fill="#d1a164"/>
+    <circle cx="754" cy="88" r="12" fill="#d1a164"/>
+    <circle cx="926" cy="88" r="12" fill="#9bbca2"/>
+    <g fill="#a5aaa1" font-family="system-ui, sans-serif" font-size="18" text-anchor="middle">
+      <text x="82" y="45">抓取</text><text x="306" y="45">过滤</text><text x="530" y="45">首次观察</text><text x="754" y="45">告警</text><text x="926" y="45">结算</text>
+    </g>
+    <text x="82" y="138" fill="#ece9df" font-family="ui-monospace, monospace" font-size="20">READ ONLY</text>
+    <text x="926" y="138" text-anchor="end" fill="#9bbca2" font-family="ui-monospace, monospace" font-size="25" font-weight="700">34 / 34 PASS</text>
+  </g>
+  <text x="96" y="614" fill="#858d84" font-family="ui-monospace, monospace" font-size="17">./venv/bin/pytest -q</text>
+  <text x="1104" y="614" text-anchor="end" fill="#a5aaa1" font-family="system-ui, sans-serif" font-size="17">不连接钱包，不构成交易建议</text>
+</svg>

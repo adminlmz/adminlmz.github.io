@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="MLZ ORBIT 技术博客">
+  <defs>
+    <radialGradient id="background" cx="32%" cy="38%" r="85%">
+      <stop offset="0" stop-color="#13223d" />
+      <stop offset="0.55" stop-color="#080d19" />
+      <stop offset="1" stop-color="#05070d" />
+    </radialGradient>
+    <radialGradient id="sun" cx="34%" cy="28%" r="72%">
+      <stop offset="0" stop-color="#f4d58a" />
+      <stop offset="0.48" stop-color="#d9a441" />
+      <stop offset="1" stop-color="#7e4e13" />
+    </radialGradient>
+    <filter id="glow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="18" />
+    </filter>
+  </defs>
+  <rect width="1200" height="630" fill="url(#background)" />
+  <g fill="#e8edf5" opacity=".48">
+    <circle cx="104" cy="92" r="2" /><circle cx="212" cy="510" r="1.5" /><circle cx="346" cy="118" r="1" />
+    <circle cx="502" cy="566" r="2" /><circle cx="816" cy="96" r="1.5" /><circle cx="1050" cy="168" r="2" />
+    <circle cx="1126" cy="490" r="1" /><circle cx="690" cy="480" r="1.5" /><circle cx="934" cy="548" r="1" />
+  </g>
+  <g transform="translate(900 315)">
+    <ellipse rx="212" ry="82" fill="none" stroke="#4f8ff7" stroke-opacity=".28" stroke-width="2" transform="rotate(-16)" />
+    <ellipse rx="148" ry="148" fill="none" stroke="#e8edf5" stroke-opacity=".12" stroke-dasharray="5 10" />
+    <circle r="92" fill="#d9a441" opacity=".22" filter="url(#glow)" />
+    <circle r="67" fill="url(#sun)" stroke="#f0c86d" stroke-opacity=".55" />
+    <circle cx="196" cy="-57" r="18" fill="#4fc5d8" />
+    <circle cx="-119" cy="113" r="13" fill="#9a7bd1" />
+    <text y="-5" fill="#251503" font-family="Arial, sans-serif" font-size="24" font-weight="700" text-anchor="middle" letter-spacing="3">MLZ</text>
+    <text y="28" fill="#251503" font-family="Arial, sans-serif" font-size="18" font-weight="700" text-anchor="middle" letter-spacing="5">ORBIT</text>
+  </g>
+  <text x="82" y="166" fill="#92a0b5" font-family="Arial, sans-serif" font-size="22" letter-spacing="5">TECHNICAL FIELD JOURNAL</text>
+  <text x="78" y="278" fill="#e8edf5" font-family="Arial, PingFang SC, sans-serif" font-size="72" font-weight="700">MLZ ORBIT</text>
+  <text x="82" y="342" fill="#e8edf5" font-family="Arial, PingFang SC, sans-serif" font-size="28">AI Agent × 智算现场运维 × 自动化工具实验室</text>
+  <line x1="82" y1="406" x2="612" y2="406" stroke="#4f8ff7" stroke-width="3" />
+  <text x="82" y="470" fill="#92a0b5" font-family="Arial, PingFang SC, sans-serif" font-size="26">从真实问题，到可复用系统。</text>
+</svg>

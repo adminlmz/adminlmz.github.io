@@ -1,0 +1,197 @@
+---
+import type { CollectionEntry } from "astro:content";
+import EvidenceGrid from "@/components/EvidenceGrid.astro";
+import PostList from "@/components/PostList.astro";
+import OrbitLayout from "@/layouts/OrbitLayout.astro";
+import { projects, type Project } from "@/data/projects";
+import { getPublishedPosts } from "@/utils/content";
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: {
+      project,
+      relatedPosts: posts.filter((post) => post.data.project === project.slug)
+    }
+  }));
+}
+
+interface Props {
+  project: Project;
+  relatedPosts: CollectionEntry<"posts">[];
+}
+
+const { project, relatedPosts } = Astro.props;
+const caseProject = project.kind === "case" ? project : undefined;
+const roadmapProject = project.kind === "roadmap" ? project : undefined;
+const projectLinks = caseProject?.links ?? [];
+const isExternal = (href: string) => /^https?:\/\//.test(href);
+const formatter = new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit" });
+const formatDate = (value: string) => formatter.format(new Date(`${value}T00:00:00+08:00`));
+---
+
+<OrbitLayout
+  title={project.name}
+  hudTitle={project.kind === "case" ? "项目案例" : "建设路线"}
+  hudTitleAsLabel
+  hudMode="detail"
+  active="/projects/"
+  description={project.summary}
+>
+  <article class:list={["project-detail", `project-detail-${project.kind}`]}>
+    <header class="detail-hero">
+      <div class="detail-meta">
+        <span>{project.category}</span>
+        <span>{project.status}</span>
+        <span>{project.kind === "case" ? "已形成产物" : `阶段 0${project.phase}`}</span>
+      </div>
+      <h1>{project.name}</h1>
+      <p>{project.summary}</p>
+
+      {caseProject && (
+        <dl class="project-facts" aria-label="项目事实">
+          {caseProject.role && <div><dt>本人职责</dt><dd>{caseProject.role}</dd></div>}
+          {caseProject.timeframe && <div><dt>时间范围</dt><dd>{caseProject.timeframe}</dd></div>}
+          <div><dt>技术栈</dt><dd>{caseProject.stack.join(" / ")}</dd></div>
+          <div><dt>最后核验</dt><dd>{formatDate(caseProject.verifiedAt)}</dd></div>
+        </dl>
+      )}
+
+      {roadmapProject && (
+        <div class="roadmap-current">
+          <span>最近动作</span>
+          <strong>{roadmapProject.currentAction}</strong>
+        </div>
+      )}
+
+      {projectLinks.length > 0 && (
+        <div class="project-links">
+          {projectLinks.map((link) => (
+            <a
+              href={link.href}
+              target={isExternal(link.href) ? "_blank" : undefined}
+              rel={isExternal(link.href) ? "noopener noreferrer" : undefined}
+            >
+              {link.label}
+            </a>
+          ))}
+        </div>
+      )}
+    </header>
+
+    {caseProject && (
+      <div class="case-study-layout">
+        <div class="case-study-main">
+          <section class="case-section" aria-labelledby="problem-title">
+            <p class="case-section-index">01 / Problem</p>
+            <h2 id="problem-title">问题背景</h2>
+            <p>{caseProject.problem}</p>
+          </section>
+
+          <section class="case-section" aria-labelledby="approach-title">
+            <p class="case-section-index">02 / Approach</p>
+            <h2 id="approach-title">方法与结构</h2>
+            <ul>{caseProject.approach.map((item) => <li>{item}</li>)}</ul>
+          </section>
+
+          <section class="case-section" aria-labelledby="decisions-title">
+            <p class="case-section-index">03 / Decisions</p>
+            <h2 id="decisions-title">核心决策与取舍</h2>
+            <ol class="decision-list">{caseProject.decisions.map((item) => <li>{item}</li>)}</ol>
+          </section>
+
+          <section class="case-section" aria-labelledby="outcomes-title">
+            <p class="case-section-index">04 / Outcome</p>
+            <h2 id="outcomes-title">结果与当前边界</h2>
+            <ul>{caseProject.outcomes.map((item) => <li>{item}</li>)}</ul>
+          </section>
+        </div>
+
+        <aside class="case-study-aside">
+          <div class="next-step-card">
+            <span>下一步</span>
+            <p>{caseProject.nextStep}</p>
+          </div>
+          <div class="privacy-note">
+            <strong>公开边界</strong>
+            <p>{caseProject.privacyNote}</p>
+          </div>
+        </aside>
+      </div>
+    )}
+
+    {caseProject && (
+      <section class="project-evidence-section" aria-labelledby="evidence-title">
+        <header>
+          <p class="case-section-index">05 / Evidence</p>
+          <h2 id="evidence-title">可查看证据</h2>
+          <p>只有重新执行或重新检查过的事实才进入这里；没有公开链接的项目只显示来源核验摘要。</p>
+        </header>
+        <EvidenceGrid evidence={caseProject.evidence} />
+      </section>
+    )}
+
+    {roadmapProject && (
+      <div class="roadmap-detail-layout">
+        <div class="roadmap-detail-main">
+          <section class="roadmap-goal" aria-labelledby="roadmap-goal-title">
+            <p class="case-section-index">Goal</p>
+            <h2 id="roadmap-goal-title">公开目标</h2>
+            <p>{roadmapProject.goal}</p>
+          </section>
+
+          <section class="roadmap-motivation" aria-labelledby="roadmap-motivation-title">
+            <p class="case-section-index">Why</p>
+            <h2 id="roadmap-motivation-title">为什么要做</h2>
+            <p>{roadmapProject.motivation}</p>
+          </section>
+
+          <section class="milestone-section" aria-labelledby="milestones-title">
+            <p class="case-section-index">Milestones</p>
+            <h2 id="milestones-title">建设里程碑</h2>
+            <ol>
+              {roadmapProject.milestones.map((milestone, index) => (
+                <li>
+                  <span>{String(index + 1).padStart(2, "0")}</span>
+                  <div><strong>{milestone.title}</strong><p>{milestone.detail}</p></div>
+                </li>
+              ))}
+            </ol>
+          </section>
+
+          <section class="acceptance-section" aria-labelledby="acceptance-title">
+            <p class="case-section-index">Acceptance</p>
+            <h2 id="acceptance-title">验收标准</h2>
+            <ul>{roadmapProject.acceptanceCriteria.map((item) => <li>{item}</li>)}</ul>
+          </section>
+        </div>
+
+        <aside>
+          <section class="planned-artifacts">
+            <h2>计划公开产物</h2>
+            <ul>{roadmapProject.plannedArtifacts.map((item) => <li>{item}</li>)}</ul>
+          </section>
+          <section class="next-step-card">
+            <span>下一步</span>
+            <p>{roadmapProject.nextStep}</p>
+          </section>
+          <section class="privacy-note">
+            <strong>公开边界</strong>
+            <p>{roadmapProject.privacyNote}</p>
+          </section>
+        </aside>
+      </div>
+    )}
+
+    {relatedPosts.length > 0 && (
+      <section class="related-posts" aria-labelledby="related-posts-title">
+        <h2 id="related-posts-title">相关技术记录</h2>
+        <p>这些文章补充项目的方法、边界和实现过程。</p>
+        <PostList posts={relatedPosts} />
+      </section>
+    )}
+
+    <a class="detail-back" href="/projects/">返回项目与建设路线</a>
+  </article>
+</OrbitLayout>

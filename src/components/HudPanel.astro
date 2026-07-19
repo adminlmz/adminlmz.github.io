@@ -1,0 +1,26 @@
+---
+interface Props {
+  title: string;
+  mode: "list" | "detail" | "reader";
+  titleAsLabel?: boolean;
+}
+
+const { title, mode, titleAsLabel = false } = Astro.props;
+---
+
+<main class:list={["hud-panel", `mode-${mode}`]} id="primary-content" aria-labelledby="page-title">
+  <header class:list={["page-header", { "page-header-label": titleAsLabel }]}>
+    <div class="page-header-copy">
+      <span class="page-kicker">MLZ / ORBIT</span>
+      {titleAsLabel ? (
+        <p class="page-title" id="page-title">{title}</p>
+      ) : (
+        <h1 class="page-title" id="page-title">{title}</h1>
+      )}
+    </div>
+    <a class="page-return" href="/">回到首页</a>
+  </header>
+  <div class="hud-content">
+    <slot />
+  </div>
+</main>

@@ -1,0 +1,79 @@
+---
+import OrbitLayout from "@/layouts/OrbitLayout.astro";
+import { categories, site } from "@/config";
+import { roadmapProjects } from "@/data/projects";
+---
+
+<OrbitLayout title="关于" hudTitle="关于 MLZ ORBIT" hudTitleAsLabel active="/about/" description="MLZ ORBIT 的作者定位、工作方法与公开边界。">
+  <article class="about-shell">
+    <header class="about-hero">
+      <p class="section-kicker">About / {site.author}</p>
+      <h1>把现场问题，整理成别人也能复核的系统。</h1>
+      <p>MLZ ORBIT 是一份公开技术工作簿，聚焦智算现场运维、AI Agent、Skills 和本地自动化。这里不靠项目名称堆砌可信度，而是区分完成状态、建设路线、验证证据和公开边界。</p>
+    </header>
+
+    <section class="about-position" aria-labelledby="position-title">
+      <div>
+        <p class="about-index">01 / Position</p>
+        <h2 id="position-title">我在关注什么</h2>
+      </div>
+      <div class="about-focus-list">
+        <article><strong>GPU 与现场诊断</strong><p>设备可见性、XID、ECC、温度、功耗和故障证据顺序。</p></article>
+        <article><strong>高速网络与通信</strong><p>IB、RDMA、RoCE、NCCL 的基线、日志和分层定位。</p></article>
+        <article><strong>Agent 与 Skills</strong><p>上下文、单步执行、完成证据和只读安全边界。</p></article>
+        <article><strong>本地自动化</strong><p>OCR、文档处理、报告生成和可复核的观察工具。</p></article>
+      </div>
+    </section>
+
+    <section class="about-method" aria-labelledby="method-title">
+      <div>
+        <p class="about-index">02 / Method</p>
+        <h2 id="method-title">工作方法</h2>
+      </div>
+      <ol>
+        <li><span>01</span><div><strong>先确认状态</strong><p>说明、准备执行、执行中和已有结果不是同一件事。</p></div></li>
+        <li><span>02</span><div><strong>一步一证据</strong><p>每一步都写明通过条件、停止条件和需要回传的结果。</p></div></li>
+        <li><span>03</span><div><strong>产物和计划分开</strong><p>没有验证过的方向只进入路线图，不算完成项目。</p></div></li>
+        <li><span>04</span><div><strong>公开前先脱敏</strong><p>客户、设备、网络、日志、账户和私人状态不进入公开站点。</p></div></li>
+      </ol>
+    </section>
+
+    <section class="about-building" aria-labelledby="building-title">
+      <div>
+        <p class="about-index">03 / Building</p>
+        <h2 id="building-title">当前建设路线</h2>
+        <p>六个方向来自旧版个人系统，目前只把与技术作品直接相关的部分放进博客。</p>
+      </div>
+      <div class="about-route-list">
+        {roadmapProjects.map((project) => (
+          <a href={`/projects/${project.slug}/`}>
+            <span>阶段 0{project.phase}</span>
+            <strong>{project.name}</strong>
+            <small>{project.status}</small>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="about-boundary" aria-labelledby="boundary-title">
+      <div>
+        <p class="about-index">04 / Boundary</p>
+        <h2 id="boundary-title">公开边界</h2>
+      </div>
+      <div>
+        <p>公开内容只保留通用方法、合成样例、脱敏产物和经过复核的项目事实。</p>
+        <ul>
+          <li>不公开客户名称、网络地址、设备编号、拓扑、作业、日志和认证信息。</li>
+          <li>第三方项目只写评测、整合或二次开发，并说明真实角色。</li>
+          <li>市场观察项目不连接钱包，不自动下单，不承诺收益。</li>
+          <li>没有公开联系方式时不放空按钮，也不猜测账户。</li>
+        </ul>
+      </div>
+    </section>
+
+    <footer class="about-footer">
+      <p>{categories.length} 个长期栏目，内容按证据持续更新。</p>
+      <div><a href="/projects/">查看项目</a><a href="/archive/">阅读文章</a></div>
+    </footer>
+  </article>
+</OrbitLayout>

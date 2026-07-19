@@ -1,0 +1,86 @@
+---
+import type { CollectionEntry } from "astro:content";
+import type { CaseProject, RoadmapProject } from "@/data/projects";
+import { categories } from "@/config";
+import { postSlug } from "@/utils/content";
+
+interface Props {
+  posts: CollectionEntry<"posts">[];
+  caseProjects: CaseProject[];
+  roadmapProjects: RoadmapProject[];
+}
+
+interface ActivityItem {
+  kind: "article" | "evidence" | "roadmap";
+  title: string;
+  summary: string;
+  href: string;
+  label: string;
+  date?: Date;
+}
+
+const { posts, caseProjects, roadmapProjects } = Astro.props;
+const formatter = new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit" });
+const categoryBySlug = new Map(categories.map((category) => [category.slug, category.label]));
+const kindOrder = { article: 0, evidence: 1, roadmap: 2 } as const;
+
+const articleItems: ActivityItem[] = posts.slice(0, 3).map((post) => ({
+  kind: "article",
+  title: post.data.title,
+  summary: post.data.description,
+  href: `/posts/${postSlug(post.id)}/`,
+  label: `文章 / ${categoryBySlug.get(post.data.category) ?? post.data.category}`,
+  date: post.data.published
+}));
+
+const evidenceItems: ActivityItem[] = caseProjects
+  .flatMap((project) => {
+    const evidence = project.evidence.find((item) => item.href);
+    return evidence?.href
+      ? [{
+          kind: "evidence" as const,
+          title: `${project.name}：${evidence.label}`,
+          summary: evidence.detail,
+          href: evidence.href,
+          label: "验证 / 项目证据",
+          date: new Date(`${evidence.verifiedAt}T00:00:00+08:00`)
+        }]
+      : [];
+  })
+  .sort((a, b) => (b.date?.valueOf() ?? 0) - (a.date?.valueOf() ?? 0))
+  .slice(0, 2);
+
+const roadmapItems: ActivityItem[] = roadmapProjects.slice(0, 1).map((project) => ({
+  kind: "roadmap",
+  title: project.name,
+  summary: project.currentAction,
+  href: `/projects/${project.slug}/`,
+  label: "路线 / 进行中"
+}));
+
+const datedItems = [...articleItems, ...evidenceItems].sort((a, b) => {
+  const dateDifference = (b.date?.valueOf() ?? 0) - (a.date?.valueOf() ?? 0);
+  return dateDifference || kindOrder[a.kind] - kindOrder[b.kind];
+});
+const items = [...datedItems, ...roadmapItems].slice(0, 6);
+---
+
+<div class="home-activity-stream" aria-label="最近产出">
+  {items.map((item) => (
+    <article class:list={["home-activity-item", `home-activity-${item.kind}`]}>
+      <div class="home-activity-meta">
+        {item.date ? (
+          <time datetime={item.date.toISOString()}>{formatter.format(item.date)}</time>
+        ) : (
+          <span>进行中</span>
+        )}
+        <span class="home-activity-kind">{item.label}</span>
+      </div>
+      <div class="home-activity-copy">
+        <h3><a href={item.href}>{item.title}</a></h3>
+        <p>{item.summary}</p>
+      </div>
+      <a class="home-activity-open" href={item.href} aria-label={`打开《${item.title}》`}>打开 ↗</a>
+    </article>
+  ))}
+</div>
