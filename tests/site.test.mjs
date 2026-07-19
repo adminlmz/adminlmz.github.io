@@ -70,9 +70,12 @@ test("GitHub Pages 发布先通过质量门禁并使用正式站点地址", asyn
   assert.match(workflow, /pnpm test/);
   assert.match(workflow, /pnpm check/);
   assert.match(workflow, /pnpm build/);
-  assert.match(workflow, /actions\/configure-pages@v5/);
-  assert.match(workflow, /actions\/upload-pages-artifact@v3/);
-  assert.match(workflow, /actions\/deploy-pages@v4/);
+  assert.match(workflow, /actions\/checkout@v7/);
+  assert.match(workflow, /pnpm\/action-setup@v6/);
+  assert.match(workflow, /actions\/setup-node@v7/);
+  assert.match(workflow, /actions\/configure-pages@v6/);
+  assert.match(workflow, /actions\/upload-pages-artifact@v5/);
+  assert.match(workflow, /actions\/deploy-pages@v5/);
   assert.match(workflow, /needs: build/);
   assert.match(workflow, /path: dist/);
   assert.doesNotMatch(workflow, /secrets\./);
