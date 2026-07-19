@@ -6,12 +6,16 @@ interface Props {
 }
 
 const { active = "/" } = Astro.props;
+const privateConsoleUrl = import.meta.env.PUBLIC_ORBIT_CONSOLE_URL?.trim();
 const primaryLinks = [
   { label: "现场", href: `/category/${categories[0].slug}/` },
   { label: "Agent", href: `/category/${categories[1].slug}/` },
   { label: "项目", href: "/projects/" },
   { label: "文章", href: "/archive/" },
-  { label: "关于", href: "/about/" }
+  { label: "关于", href: "/about/" },
+  ...(privateConsoleUrl
+    ? [{ label: "控制台", href: privateConsoleUrl, ariaLabel: "打开私人控制台，需要 GitHub 登录" }]
+    : [])
 ];
 ---
 
@@ -33,7 +37,12 @@ const primaryLinks = [
 
     <nav class="site-nav-links" aria-label="主导航">
       {primaryLinks.map((link) => (
-        <a class:list={[{ active: active === link.href }]} href={link.href} aria-current={active === link.href ? "page" : undefined}>
+        <a
+          class:list={[{ active: active === link.href }]}
+          href={link.href}
+          aria-current={active === link.href ? "page" : undefined}
+          aria-label={link.ariaLabel}
+        >
           {link.label}
         </a>
       ))}

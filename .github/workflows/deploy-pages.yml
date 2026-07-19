@@ -20,6 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SITE_URL: https://adminlmz.github.io
+      PUBLIC_ORBIT_CONSOLE_URL: ${{ vars.PUBLIC_ORBIT_CONSOLE_URL }}
     steps:
       - name: Checkout
         uses: actions/checkout@v7

@@ -67,6 +67,7 @@ test("GitHub Pages 发布先通过质量门禁并使用正式站点地址", asyn
 
   assert.equal(path.resolve(gitRoot.trim()), projectRoot, "博客必须作为独立 Git 仓库发布");
   assert.match(workflow, /SITE_URL: https:\/\/adminlmz\.github\.io/);
+  assert.match(workflow, /PUBLIC_ORBIT_CONSOLE_URL: \$\{\{ vars\.PUBLIC_ORBIT_CONSOLE_URL \}\}/);
   assert.match(workflow, /pnpm test/);
   assert.match(workflow, /pnpm check/);
   assert.match(workflow, /pnpm build/);
@@ -361,6 +362,9 @@ test("搜索、导航和详情页保留可访问语义", async () => {
   for (const href of ["/projects/", "/archive/", "/about/"]) {
     assert.match(shell, new RegExp(`href: "${href.replaceAll("/", "\\/")}"`), `顶部导航缺少 ${href}`);
   }
+  assert.match(shell, /import\.meta\.env\.PUBLIC_ORBIT_CONSOLE_URL/);
+  assert.match(shell, /label: "控制台"/);
+  assert.match(shell, /需要 GitHub 登录/);
   assert.match(css, /@media \(max-width: 900px\)/);
   assert.match(css, /@media \(max-width: 620px\)/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
