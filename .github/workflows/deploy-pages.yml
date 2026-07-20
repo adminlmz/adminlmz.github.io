@@ -44,15 +44,6 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v6
 
-      - name: Bind custom domain
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh api --method PUT "repos/${GITHUB_REPOSITORY}/pages" \
-            -H "Accept: application/vnd.github+json" \
-            -f cname="orbit.lyhapi.com" \
-            --silent
-
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v5
         with:
