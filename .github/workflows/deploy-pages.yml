@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SITE_URL: https://orbit.lyhapi.com
-      PUBLIC_ORBIT_CONSOLE_URL: ${{ vars.PUBLIC_ORBIT_CONSOLE_URL || 'https://console.lyhapi.com' }}
+      PUBLIC_ORBIT_CONSOLE_URL: https://console.lyhapi.com
     steps:
       - name: Checkout
         uses: actions/checkout@v7

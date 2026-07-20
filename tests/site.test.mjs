@@ -67,7 +67,7 @@ test("GitHub Pages 发布先通过质量门禁并使用正式站点地址", asyn
 
   assert.equal(path.resolve(gitRoot.trim()), projectRoot, "博客必须作为独立 Git 仓库发布");
   assert.match(workflow, /SITE_URL: https:\/\/orbit\.lyhapi\.com/);
-  assert.match(workflow, /PUBLIC_ORBIT_CONSOLE_URL: \$\{\{ vars\.PUBLIC_ORBIT_CONSOLE_URL \|\| 'https:\/\/console\.lyhapi\.com' \}\}/);
+  assert.match(workflow, /PUBLIC_ORBIT_CONSOLE_URL: https:\/\/console\.lyhapi\.com/);
   assert.match(workflow, /pnpm test/);
   assert.match(workflow, /pnpm check/);
   assert.match(workflow, /pnpm build/);

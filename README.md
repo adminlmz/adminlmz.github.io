@@ -39,7 +39,7 @@ pnpm build
 
 正式站点发布到 `https://orbit.lyhapi.com`。推送到 `main` 后，GitHub Actions 会依次运行测试、类型检查和正式构建，全部通过后再更新 Pages。
 
-自定义域名由 GitHub Pages 管理 `orbit.lyhapi.com`，私人控制台使用 `https://console.lyhapi.com`。如果仓库变量 `PUBLIC_ORBIT_CONSOLE_URL` 未设置，工作流会使用这个私人控制台地址作为默认值。
+自定义域名由 GitHub Pages 管理 `orbit.lyhapi.com`，私人控制台使用 `https://console.lyhapi.com`。发布工作流会把控制台入口固定指向这个受保护地址。
 
 也可以在仓库的 Actions 页面手动运行 `Deploy to GitHub Pages` 工作流。
 
